@@ -20,9 +20,11 @@ int*** multiplicaoMatrizesPixelsClassico(int*** matA, int*** matB, int n, int rg
     
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
-            for(int k = 0; k < 3; k++){
-                if(k != 0)
-                    matrizResultante[i][j][k] += matA[i][j][k] * matB[i][j][k];
+            for(int k = 0; k < rgbSize; k++){
+                matrizResultante[i][j][k] = 0;
+                for(int l = 0; l < n; l++){
+                    matrizResultante[i][j][k] += matA[i][l][k] * matB[l][j][k];  
+                }
             }
         }
     }
@@ -31,11 +33,11 @@ int*** multiplicaoMatrizesPixelsClassico(int*** matA, int*** matB, int n, int rg
 }
 
 
-void preencherMatriz(int*** mat, int n, int rgbSize){
+void preencherMatriz(FILE *file, int*** mat, int n, int rgbSize){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             for(int k = 0; k < rgbSize; k++){
-                scanf("%d", &mat[i][j][k]);
+                fscanf(file, "%d", &mat[i][j][k]);
             }
         }
     }
