@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 //Função para alocar a matriz na memória
 //n - tamanho da matriz quadratica
 //rgbSize - tamnho do vetor q vai ser o RGB
@@ -67,4 +69,42 @@ void freeMatriz(int*** matriz, int n){
         free(matriz[i]);
     }
     free(matriz);
+}
+
+
+int*** dividirMatriz(int n, int*** mat, int iInicio, int jInicio, int rgbSize){
+    int novoTamanho = n/2;
+    int*** matrizDividida = alocarMatrizPixels(novoTamanho, rgbSize);
+
+    for(int i = 0, i2 = iInicio; i < novoTamanho; i++, i2++){
+        for(int j = 0, j2 = jInicio; j < novoTamanho; j++, j2++){
+           for(int k = 0; k < rgbSize; k++){
+                matrizDividida[i][j][k] = mat[i2][j2][k];
+            }
+        }
+    }
+    return matrizDividida;
+}
+
+/*
+    | PARTE 1   PARTE 2 |
+    |                   |
+    | PARTE 3   PARTE 4 |
+
+*/
+int*** multiplicacaoMatrizesStrassen(int*** matA, int***matB, int n, int rgbSize){
+    int*** matrizResultante = alocarMatrizPixels(n, rgbSize);
+    int*** tamanhoMatrizDividido = n/2;
+
+    //Dividindo Matriz A em 4
+    int*** matAParte1 = dividirMatriz(n, matA, 0, 0, rgbSize);
+    int*** matAParte2 = dividirMatriz(n, matA, 0, tamanhoMatrizDividido, rgbSize);
+    int*** matAParte3 = dividirMatriz(n, matA, tamanhoMatrizDividido, 0, rgbSize);
+    int*** matAParte4 = dividirMatriz(n, matA, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
+
+    //Dividindo Matriz B em 4
+    int*** matBParte1 = dividirMatriz(n, matB, 0, 0, rgbSize);
+    int*** matBParte2 = dividirMatriz(n, matB, 0, tamanhoMatrizDividido, rgbSize);
+    int*** matBParte3 = dividirMatriz(n, matB, tamanhoMatrizDividido, 0, rgbSize);
+    int*** matBParte4 = dividirMatriz(n, matB, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
 }
