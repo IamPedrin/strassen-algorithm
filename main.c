@@ -3,8 +3,6 @@
 
 #include "funcoes.c"
 
-
-
 int main(){
     //Declaração de váriaveis
     int*** matA;
@@ -34,15 +32,18 @@ int main(){
     //Alocacao da Matriz A, B
     matA = alocarMatrizPixels(n, rgbSize);
     matB = alocarMatrizPixels(n, rgbSize);
-
+    matResultante = alocarMatrizPixels(n, rgbSize);
+    
     //Preenchendo Matriz A
     preencherMatriz(file, matA, n, rgbSize);
     //Preenchendo Matriz B
     preencherMatriz(file, matB, n, rgbSize);
     //Multiplicacao das Matrizes de Maneura Classica
     //matResultante = multiplicaoMatrizesPixelsClassico(matA, matB, n, rgbSize);
-    
 
+    //Strassen
+    multiplicacaoMatrizesStrassen(matA, matB, matResultante, n, rgbSize);
+    
     // printf("\n");
     // printMatriz(matResultante, n, rgbSize);
 
@@ -52,11 +53,12 @@ int main(){
     printf("%d", corMax);
     printMatriz(matA, n, rgbSize);
     printMatriz(matB, n, rgbSize);
+    printMatriz(matResultante, n, rgbSize);
 
     //Liberando Memoria
     freeMatriz(matA, n);
     freeMatriz(matB, n);
-    //freeMatriz(matResultante, n);
+    freeMatriz(matResultante, n);
 
     fclose(file);
     return 0;
