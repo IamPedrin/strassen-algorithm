@@ -52,7 +52,6 @@ void printMatriz(int*** mat, int n, int rgbSize){
     for(int i = 0; i < n; i++){
         printf("\n");
         for(int j = 0; j < n; j++){
-            printf(" ");
             for(int k = 0; k < rgbSize; k++){
                 printf("%d ", mat[i][j][k]);
             }
@@ -193,7 +192,9 @@ void multiplicacaoMatrizesStrassen(int*** matA, int***matB, int*** resultado, in
         int*** matResultanteP2 = adicaoMatrizes(tamanhoMatrizDividido, p1, p2, rgbSize);
         int*** matResultanteP3 = adicaoMatrizes(tamanhoMatrizDividido, p3, p4, rgbSize);
         int*** matResultanteP4 = subtracaoMatrizes(tamanhoMatrizDividido, subtracaoMatrizes(tamanhoMatrizDividido,
-        adicaoMatrizes(tamanhoMatrizDividido, p1, p5, rgbSize), p3, rgbSize), p1, rgbSize);
+        adicaoMatrizes(tamanhoMatrizDividido, p1, p5, rgbSize), p3, rgbSize), p7, rgbSize);
+        //int*** matResultanteP4 = adicaoMatrizes(tamanhoMatrizDividido, subtracaoMatrizes(tamanhoMatrizDividido,
+        //subtracaoMatrizes(tamanhoMatrizDividido, p3, p1, rgbSize), p5, rgbSize), p1, rgbSize);
 
         //Juncao das partes
         juntarMatriz(n, matResultanteP1, resultado, 0, 0, rgbSize);

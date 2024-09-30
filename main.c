@@ -17,7 +17,7 @@ int main(){
     char formato[2];
 
     FILE *file;
-    file = fopen("Casos/1.in", "r");
+    file = fopen("Casos/3.in", "r");
 
     if(file == NULL){
         printf("Erro ao abrir o arquivo");
@@ -29,7 +29,7 @@ int main(){
     fscanf(file, "%d", &corMax);
     tamanhoDividido = n/2;
 
-    //Alocacao da Matriz A, B
+    //Alocacao da Matriz A, B e Resultante
     matA = alocarMatrizPixels(n, rgbSize);
     matB = alocarMatrizPixels(n, rgbSize);
     matResultante = alocarMatrizPixels(n, rgbSize);
@@ -38,6 +38,7 @@ int main(){
     preencherMatriz(file, matA, n, rgbSize);
     //Preenchendo Matriz B
     preencherMatriz(file, matB, n, rgbSize);
+    
     //Multiplicacao das Matrizes de Maneura Classica
     //matResultante = multiplicaoMatrizesPixelsClassico(matA, matB, n, rgbSize);
 
@@ -51,8 +52,6 @@ int main(){
     printf("%s\n", formato);
     printf("%d %d\n", n, n);
     printf("%d", corMax);
-    printMatriz(matA, n, rgbSize);
-    printMatriz(matB, n, rgbSize);
     printMatriz(matResultante, n, rgbSize);
 
     //Liberando Memoria
