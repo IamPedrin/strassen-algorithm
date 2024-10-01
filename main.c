@@ -3,7 +3,7 @@
 
 #include "funcoes.c"
 
-int main(){
+int main(int argc, char *argv[]){
     //Declaração de váriaveis
     int*** matA;
     int*** matB;
@@ -15,15 +15,18 @@ int main(){
     int rgbSize = 3;
     int corMax;
     char formato[2];
+    
 
     FILE *file;
-    file = fopen("Casos/3.in", "r");
+
+    file = fopen(argv[1], "r");
 
     if(file == NULL){
         printf("Erro ao abrir o arquivo");
         return 1;
     }
 
+    //Leitura dos dados do arquivo
     fscanf(file, "%s", formato);
     fscanf(file, "%d %d", &n, &n);
     fscanf(file, "%d", &corMax);
@@ -39,14 +42,9 @@ int main(){
     //Preenchendo Matriz B
     preencherMatriz(file, matB, n, rgbSize);
     
-    //Multiplicacao das Matrizes de Maneura Classica
-    //matResultante = multiplicaoMatrizesPixelsClassico(matA, matB, n, rgbSize);
-
     //Strassen
-    multiplicacaoMatrizesStrassen(matA, matB, matResultante, n, rgbSize);
+    matResultante = multiplicacaoMatrizesStrassen(matA, matB, n, rgbSize);
     
-    // printf("\n");
-    // printMatriz(matResultante, n, rgbSize);
 
     //Printando no formato correto
     printf("%s\n", formato);
