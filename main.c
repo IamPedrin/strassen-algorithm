@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "funcoes.c"
 
 int main(int argc, char *argv[]){
     //Declaração de váriaveis
+    clock_t start_t, end_t;
+    double total_t;
     int*** matA;
     int*** matB;
     int*** matResultante;
@@ -16,7 +19,7 @@ int main(int argc, char *argv[]){
     int corMax;
     char formato[2];
     
-
+    start_t = clock();
     FILE *file;
 
     file = fopen(argv[1], "r");
@@ -30,21 +33,15 @@ int main(int argc, char *argv[]){
     fscanf(file, "%s", formato);
     fscanf(file, "%d %d", &n, &n);
     fscanf(file, "%d", &corMax);
-    tamanhoDividido = n/2;
-
-    //Alocacao da Matriz A, B e Resultante
-    matA = alocarMatrizPixels(n, rgbSize);
-    matB = alocarMatrizPixels(n, rgbSize);
-    matResultante = alocarMatrizPixels(n, rgbSize);
     
     //Preenchendo Matriz A
-    preencherMatriz(file, matA, n, rgbSize);
+    matA = preencherMatriz(file, n, rgbSize);
     //Preenchendo Matriz B
-    preencherMatriz(file, matB, n, rgbSize);
+    matB = preencherMatriz(file, n, rgbSize);
     
     //Strassen
     matResultante = multiplicacaoMatrizesStrassen(matA, matB, n, rgbSize);
-    
+
 
     //Printando no formato correto
     printf("%s\n", formato);
@@ -56,6 +53,11 @@ int main(int argc, char *argv[]){
     freeMatriz(matA, n);
     freeMatriz(matB, n);
     freeMatriz(matResultante, n);
+
+    end_t = clock();
+
+    total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+    printf("\nTempo total: %f\n", total_t);
 
     fclose(file);
     return 0;
