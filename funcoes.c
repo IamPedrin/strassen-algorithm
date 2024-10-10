@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+
 //Função para alocar a matriz na memória
 //n - tamanho da matriz quadratica
 //rgbSize - tamnho do vetor q vai ser o RGB
@@ -11,9 +12,6 @@ int*** alocarMatrizPixels(int n, int rgbSize){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             mat[i][j] = (int*) malloc(rgbSize * sizeof(int));
-            for(int k = 0; k < rgbSize; k++){
-                mat[i][j][k] = 0;
-            }
         }
     } 
     return mat;
@@ -31,7 +29,6 @@ void multiplicaoMatrizesPixelsClassico(int*** matA, int*** matB, int*** matrizRe
         }
     }
 }
-
 
 int*** preencherMatriz(FILE *file, int n, int rgbSize){
     int*** mat = alocarMatrizPixels(n, rgbSize);
@@ -117,7 +114,7 @@ void subtracaoMatrizes(int n, int*** matA, int*** matB, int*** matResultante, in
 int*** multiplicacaoMatrizesStrassen(int*** matA, int***matB, int n, int rgbSize){
     int*** resultado = alocarMatrizPixels(n, rgbSize);
     int tamanhoMatrizDividido = n/2;
-    if(n < 32){
+    if(n <= 64){
         multiplicaoMatrizesPixelsClassico(matA, matB, resultado, n, rgbSize);
     }else{
         //Dividindo Matriz A em 4

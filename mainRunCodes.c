@@ -1,113 +1,115 @@
+//CTCO04 - Projeto e Análise de Algoritmos
+//Algoritmo de Strassen - Multiplicação de matrizes aplicado a pixels de uma imagem
+//Pedro Luiz de Freitas Silva - 2022014276
+
 #include <stdio.h>
 #include <stdlib.h>
 
+struct pixel{
+    int rgb[3];
+};
+
+typedef struct pixel pixel;
+
 //Função para alocar a matriz na memória
 //n - tamanho da matriz quadratica
-//rgbSize - tamnho do vetor q vai ser o RGB
-int*** alocarMatrizPixels(int n, int rgbSize){
-    int*** mat = (int***) malloc(n * sizeof(int**));
+pixel** alocarMatrizPixels(int n){
+    pixel** matriz = (pixel**) malloc(n * sizeof(pixel*));
     for(int i = 0; i < n; i++){
-        mat[i] = (int**) malloc(n * sizeof(int*));
+        matriz[i] = (pixel*) malloc(n * sizeof(pixel));
     }
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            mat[i][j] = (int*) malloc(rgbSize * sizeof(int));
-            for(int k = 0; k < rgbSize; k++){
-                mat[i][j][k] = 0;
-            }
-        }
-    } 
-    return mat;
+    return matriz;
 }
 
-void multiplicaoMatrizesPixelsClassico(int*** matA, int*** matB, int*** matrizResultante, int n, int rgbSize){
+//funcao utilizada realizar de maneira classica a multiplicacao de matrizes
+void multiplicaoMatrizesPixelsClassico(pixel** matA, pixel** matB, pixel** matrizResultante, int n, int rgbSize){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             for(int k = 0; k < rgbSize; k++){
-                matrizResultante[i][j][k] = 0;
+                matrizResultante[i][j].rgb[k] = 0;
                 for(int l = 0; l < n; l++){
-                    matrizResultante[i][j][k] += matA[i][l][k] * matB[l][j][k];  
+                    matrizResultante[i][j].rgb[k] += matA[i][l].rgb[k] * matB[l][j].rgb [k];  
                 }
             }
         }
     }
 }
 
-void preencherMatriz(int*** mat, int n, int rgbSize){
+//funcao utilizada para ler dados para uma matriz
+void preencherMatriz(pixel** mat, int n, int rgbSize){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             for(int k = 0; k < rgbSize; k++){
-                scanf("%d", &mat[i][j][k]);
+                scanf("%d", &mat[i][j].rgb[k]);
             }
         }
     }
 }
 
-void printMatriz(int*** mat, int n, int rgbSize){
+//funcao utilizada para printar uma matriz
+void printMatriz(pixel** mat, int n, int rgbSize){
     for(int i = 0; i < n; i++){
         printf("\n");
         for(int j = 0; j < n; j++){
             for(int k = 0; k < rgbSize; k++){
-                printf("%d ", mat[i][j][k]);
+                printf("%d ", mat[i][j].rgb[k]);
             }
         }
+        
     }
 }
 
 //Função para liberar a matriz da memória
-void freeMatriz(int*** matriz, int n){
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            free(matriz[i][j]);
-        }
-    }
-
+void freeMatriz(pixel** matriz, int n){
     for(int i = 0; i < n; i++){
         free(matriz[i]);
     }
     free(matriz);
 }
 
-void dividirMatriz(int n, int*** mat, int*** matrizDividida, int iInicio, int jInicio, int rgbSize){
+//Funcao utilizada para dividir um quadradante de uma matriz
+void dividirMatriz(int n, pixel** mat, pixel** matrizDividida, int iInicio, int jInicio, int rgbSize){
     int novoTamanho = n/2;
 
     for(int i = 0, i2 = iInicio; i < novoTamanho; i++, i2++){
         for(int j = 0, j2 = jInicio; j < novoTamanho; j++, j2++){
            for(int k = 0; k < rgbSize; k++){
-                matrizDividida[i][j][k] = mat[i2][j2][k];
+                matrizDividida[i][j].rgb[k] = mat[i2][j2].rgb[k];
             }
         }
     }
 }
 
 //Junta as 4 partes da matriz em uma matriz completa
-void juntarMatriz(int n, int*** matDividida, int*** matrizCompleta, int iInicio, int jInicio, int rgbSize){
+void juntarMatriz(int n, pixel** matDividida, pixel** matrizCompleta, int iInicio, int jInicio, int rgbSize){
     int novoTamanho = n/2;
 
     for(int i = 0, i2 = iInicio; i < novoTamanho; i++, i2++){
         for(int j = 0, j2 = jInicio; j < novoTamanho; j++, j2++){
             for(int k = 0; k < rgbSize; k++){
-                matrizCompleta[i2][j2][k] = matDividida[i][j][k];
+                matrizCompleta[i2][j2].rgb[k] = matDividida[i][j].rgb[k];
             }
         }
     }
 }
 
-void adicaoMatrizes(int n, int*** matA, int*** matB, int*** matResultante, int rgbSize){
+//Funcao para adição de uma matriz por outra
+void adicaoMatrizes(int n, pixel** matA, pixel** matB, pixel** matResultante, int rgbSize){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             for(int k = 0; k < rgbSize; k++){
-                matResultante[i][j][k] = matA[i][j][k] + matB[i][j][k];
+                matResultante[i][j].rgb[k] = matA[i][j].rgb[k] + matB[i][j].rgb[k];
             }
         }
     }
 }
 
-void subtracaoMatrizes(int n, int*** matA, int*** matB, int*** matResultante, int rgbSize){
+//Funcao para Subtração de uma matriz por outra
+void subtracaoMatrizes(int n, pixel** matA, pixel** matB, pixel** matResultante, int rgbSize){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             for(int k = 0; k < rgbSize; k++){
-                matResultante[i][j][k] = matA[i][j][k] - matB[i][j][k];
+                matResultante[i][j].rgb[k] = matA[i][j].rgb[k] - matB[i][j].rgb[k];
             }
         }
     }
@@ -119,44 +121,45 @@ void subtracaoMatrizes(int n, int*** matA, int*** matB, int*** matResultante, in
     | PARTE 3   PARTE 4 |
 
 */
-int*** multiplicacaoMatrizesStrassen(int*** matA, int***matB, int n, int rgbSize){
-    int*** resultado = alocarMatrizPixels(n, rgbSize);
+//Funcao utilizada para aplicar a multiplicacao de Strassen de forma recursiva
+pixel** multiplicacaoMatrizesStrassen(pixel** matA, pixel**matB, int n, int rgbSize){
+    pixel** resultado = alocarMatrizPixels(n);
     int tamanhoMatrizDividido = n/2;
     if(n < 32){
         multiplicaoMatrizesPixelsClassico(matA, matB, resultado, n, rgbSize);
     }else{
         //Dividindo Matriz A em 4
-        int*** matAParte1 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matAParte1 = alocarMatrizPixels(tamanhoMatrizDividido);
         dividirMatriz(n, matA, matAParte1, 0, 0, rgbSize);
-        int*** matAParte2 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize); 
+        pixel** matAParte2 = alocarMatrizPixels(tamanhoMatrizDividido); 
         dividirMatriz(n, matA, matAParte2, 0, tamanhoMatrizDividido, rgbSize);
-        int*** matAParte3 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matAParte3 = alocarMatrizPixels(tamanhoMatrizDividido);
         dividirMatriz(n, matA, matAParte3, tamanhoMatrizDividido, 0, rgbSize);
-        int*** matAParte4 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matAParte4 = alocarMatrizPixels(tamanhoMatrizDividido);
         dividirMatriz(n, matA, matAParte4, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
 
         //Dividindo Matriz B em 4
-        int*** matBParte1 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matBParte1 = alocarMatrizPixels(tamanhoMatrizDividido);
         dividirMatriz(n, matB, matBParte1, 0, 0, rgbSize);
-        int*** matBParte2 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matBParte2 = alocarMatrizPixels(tamanhoMatrizDividido);
         dividirMatriz(n, matB, matBParte2, 0, tamanhoMatrizDividido, rgbSize);
-        int*** matBParte3 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matBParte3 = alocarMatrizPixels(tamanhoMatrizDividido);
         dividirMatriz(n, matB, matBParte3, tamanhoMatrizDividido, 0, rgbSize);
-        int*** matBParte4 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matBParte4 = alocarMatrizPixels(tamanhoMatrizDividido);
         dividirMatriz(n, matB, matBParte4, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
         
         //Matrizes temporarias para serem utilizadas para chamar as adicoes e subtracoes nos produtos de strassen
-        int*** temp1 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
-        int*** temp2 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** temp1 = alocarMatrizPixels(tamanhoMatrizDividido);
+        pixel** temp2 = alocarMatrizPixels(tamanhoMatrizDividido);
 
         //Variaveis para receber os resultados das formulas de strassen
-        int*** p1;
-        int*** p2;
-        int*** p3;
-        int*** p4;
-        int*** p5;
-        int*** p6;
-        int*** p7;
+        pixel** p1;
+        pixel** p2;
+        pixel** p3;
+        pixel** p4;
+        pixel** p5;
+        pixel** p6;
+        pixel** p7;
 
         //7 produtos de strassen
         //P1 = A.(F-H)
@@ -194,10 +197,10 @@ int*** multiplicacaoMatrizesStrassen(int*** matA, int***matB, int n, int rgbSize
         freeMatriz(matBParte4, tamanhoMatrizDividido);
 
         //Matrizes das 4 partes que serao juntadas posteriormentes aos produtos de Strassen
-        int*** matResultanteP1 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
-        int*** matResultanteP2 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
-        int*** matResultanteP3 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
-        int*** matResultanteP4 = alocarMatrizPixels(tamanhoMatrizDividido, rgbSize);
+        pixel** matResultanteP1 = alocarMatrizPixels(tamanhoMatrizDividido);
+        pixel** matResultanteP2 = alocarMatrizPixels(tamanhoMatrizDividido);
+        pixel** matResultanteP3 = alocarMatrizPixels(tamanhoMatrizDividido);
+        pixel** matResultanteP4 = alocarMatrizPixels(tamanhoMatrizDividido);
 
         adicaoMatrizes(tamanhoMatrizDividido, p5, p4, temp1, rgbSize);
         subtracaoMatrizes(tamanhoMatrizDividido, temp1, p2, temp2, rgbSize);
@@ -228,7 +231,7 @@ int*** multiplicacaoMatrizesStrassen(int*** matA, int***matB, int n, int rgbSize
         juntarMatriz(n, matResultanteP3, resultado, tamanhoMatrizDividido, 0, rgbSize);
         juntarMatriz(n, matResultanteP4, resultado, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
 
-
+        //Liberando da memoria as matrizes restantes
         freeMatriz(matResultanteP1, tamanhoMatrizDividido);
         freeMatriz(matResultanteP2, tamanhoMatrizDividido);
         freeMatriz(matResultanteP3, tamanhoMatrizDividido);
@@ -240,9 +243,9 @@ int*** multiplicacaoMatrizesStrassen(int*** matA, int***matB, int n, int rgbSize
 
 int main(){
     //Declaração de váriaveis
-    int*** matA;
-    int*** matB;
-    int*** matResultante;
+    pixel** matA;
+    pixel** matB;
+    pixel** matResultante;
     int n;
     int rgbSize = 3;
     int corMax;
@@ -254,8 +257,8 @@ int main(){
     scanf("%d", &corMax);
 
     //Alocacao da Matriz A, B e Resultante
-    matA = alocarMatrizPixels(n, rgbSize);
-    matB = alocarMatrizPixels(n, rgbSize);
+    matA = alocarMatrizPixels(n);
+    matB = alocarMatrizPixels(n);
     
     //Preenchendo Matriz A
     preencherMatriz(matA, n, rgbSize);
