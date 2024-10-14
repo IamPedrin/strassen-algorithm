@@ -125,119 +125,119 @@ void subtracaoMatrizes(int n, pixel** matA, pixel** matB, pixel** matResultante,
 pixel** multiplicacaoMatrizesStrassen(pixel** matA, pixel**matB, int n, int rgbSize){
     pixel** resultado = alocarMatrizPixels(n);
     int tamanhoMatrizDividido = n/2;
-    if(n < 32){
+    if(n <= 32){
         multiplicaoMatrizesPixelsClassico(matA, matB, resultado, n, rgbSize);
-    }else{
-        //Dividindo Matriz A em 4
-        pixel** matAParte1 = alocarMatrizPixels(tamanhoMatrizDividido);
-        dividirMatriz(n, matA, matAParte1, 0, 0, rgbSize);
-        pixel** matAParte2 = alocarMatrizPixels(tamanhoMatrizDividido); 
-        dividirMatriz(n, matA, matAParte2, 0, tamanhoMatrizDividido, rgbSize);
-        pixel** matAParte3 = alocarMatrizPixels(tamanhoMatrizDividido);
-        dividirMatriz(n, matA, matAParte3, tamanhoMatrizDividido, 0, rgbSize);
-        pixel** matAParte4 = alocarMatrizPixels(tamanhoMatrizDividido);
-        dividirMatriz(n, matA, matAParte4, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
-
-        //Dividindo Matriz B em 4
-        pixel** matBParte1 = alocarMatrizPixels(tamanhoMatrizDividido);
-        dividirMatriz(n, matB, matBParte1, 0, 0, rgbSize);
-        pixel** matBParte2 = alocarMatrizPixels(tamanhoMatrizDividido);
-        dividirMatriz(n, matB, matBParte2, 0, tamanhoMatrizDividido, rgbSize);
-        pixel** matBParte3 = alocarMatrizPixels(tamanhoMatrizDividido);
-        dividirMatriz(n, matB, matBParte3, tamanhoMatrizDividido, 0, rgbSize);
-        pixel** matBParte4 = alocarMatrizPixels(tamanhoMatrizDividido);
-        dividirMatriz(n, matB, matBParte4, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
-        
-        //Matrizes temporarias para serem utilizadas para chamar as adicoes e subtracoes nos produtos de strassen
-        pixel** temp1 = alocarMatrizPixels(tamanhoMatrizDividido);
-        pixel** temp2 = alocarMatrizPixels(tamanhoMatrizDividido);
-
-        //Variaveis para receber os resultados das formulas de strassen
-        pixel** p1;
-        pixel** p2;
-        pixel** p3;
-        pixel** p4;
-        pixel** p5;
-        pixel** p6;
-        pixel** p7;
-
-        //7 produtos de strassen
-        //P1 = A.(F-H)
-        subtracaoMatrizes(tamanhoMatrizDividido, matBParte2, matBParte4, temp1, rgbSize);
-        p1 = multiplicacaoMatrizesStrassen(matAParte1, temp1, tamanhoMatrizDividido, rgbSize);
-        //P2 = (A+B).H
-        adicaoMatrizes(tamanhoMatrizDividido, matAParte1, matAParte2, temp1, rgbSize);
-        p2 = multiplicacaoMatrizesStrassen(temp1, matBParte4, tamanhoMatrizDividido, rgbSize);
-        //P3 = (C+D).E
-        adicaoMatrizes(tamanhoMatrizDividido, matAParte3, matAParte4, temp1, rgbSize);
-        p3 = multiplicacaoMatrizesStrassen(temp1, matBParte1, tamanhoMatrizDividido, rgbSize);
-        //P4 = D.(G-E)
-        subtracaoMatrizes(tamanhoMatrizDividido, matBParte3, matBParte1, temp1, rgbSize);
-        p4 = multiplicacaoMatrizesStrassen(matAParte4, temp1, tamanhoMatrizDividido, rgbSize);
-        //P5 = (A+D).(E+H)
-        adicaoMatrizes(tamanhoMatrizDividido, matAParte1, matAParte4, temp1, rgbSize);
-        adicaoMatrizes(tamanhoMatrizDividido, matBParte1, matBParte4, temp2, rgbSize);
-        p5 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
-        //P6 = (B-D).(G+H)
-        subtracaoMatrizes(tamanhoMatrizDividido, matAParte2, matAParte4, temp2, rgbSize);
-        adicaoMatrizes(tamanhoMatrizDividido, matBParte3, matBParte4, temp2, rgbSize);
-        p6 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
-        //P7 = (A-C).(E-F)
-        subtracaoMatrizes(tamanhoMatrizDividido, matAParte1, matAParte3, temp1, rgbSize);
-        adicaoMatrizes(tamanhoMatrizDividido, matBParte1, matBParte2, temp2, rgbSize);
-        p7 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
-
-        freeMatriz(matAParte1, tamanhoMatrizDividido);
-        freeMatriz(matAParte2, tamanhoMatrizDividido);
-        freeMatriz(matAParte3, tamanhoMatrizDividido);
-        freeMatriz(matAParte4, tamanhoMatrizDividido);
-        freeMatriz(matBParte1, tamanhoMatrizDividido);
-        freeMatriz(matBParte2, tamanhoMatrizDividido);
-        freeMatriz(matBParte3, tamanhoMatrizDividido);
-        freeMatriz(matBParte4, tamanhoMatrizDividido);
-
-        //Matrizes das 4 partes que serao juntadas posteriormentes aos produtos de Strassen
-        pixel** matResultanteP1 = alocarMatrizPixels(tamanhoMatrizDividido);
-        pixel** matResultanteP2 = alocarMatrizPixels(tamanhoMatrizDividido);
-        pixel** matResultanteP3 = alocarMatrizPixels(tamanhoMatrizDividido);
-        pixel** matResultanteP4 = alocarMatrizPixels(tamanhoMatrizDividido);
-
-        adicaoMatrizes(tamanhoMatrizDividido, p5, p4, temp1, rgbSize);
-        subtracaoMatrizes(tamanhoMatrizDividido, temp1, p2, temp2, rgbSize);
-        adicaoMatrizes(tamanhoMatrizDividido, temp2, p6, matResultanteP1, rgbSize);
-
-        adicaoMatrizes(tamanhoMatrizDividido, p1, p2, matResultanteP2, rgbSize);
-        adicaoMatrizes(tamanhoMatrizDividido, p3, p4, matResultanteP3, rgbSize);
-
-        adicaoMatrizes(tamanhoMatrizDividido, p5, p1, temp1, rgbSize);
-        subtracaoMatrizes(tamanhoMatrizDividido, temp1, p3, temp2, rgbSize);
-        subtracaoMatrizes(tamanhoMatrizDividido, temp2, p7, matResultanteP4, rgbSize);
-
-        freeMatriz(temp1, tamanhoMatrizDividido);
-        freeMatriz(temp2, tamanhoMatrizDividido);
-
-        freeMatriz(p1, tamanhoMatrizDividido);
-        freeMatriz(p2, tamanhoMatrizDividido);
-        freeMatriz(p3, tamanhoMatrizDividido);
-        freeMatriz(p4, tamanhoMatrizDividido);
-        freeMatriz(p5, tamanhoMatrizDividido);
-        freeMatriz(p6, tamanhoMatrizDividido);
-        freeMatriz(p7, tamanhoMatrizDividido);
-
-
-        //Juncao das 4 partes
-        juntarMatriz(n, matResultanteP1, resultado, 0, 0, rgbSize);
-        juntarMatriz(n, matResultanteP2, resultado, 0, tamanhoMatrizDividido, rgbSize);
-        juntarMatriz(n, matResultanteP3, resultado, tamanhoMatrizDividido, 0, rgbSize);
-        juntarMatriz(n, matResultanteP4, resultado, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
-
-        //Liberando da memoria as matrizes restantes
-        freeMatriz(matResultanteP1, tamanhoMatrizDividido);
-        freeMatriz(matResultanteP2, tamanhoMatrizDividido);
-        freeMatriz(matResultanteP3, tamanhoMatrizDividido);
-        freeMatriz(matResultanteP4, tamanhoMatrizDividido);
-
+        return resultado;
     }
+    //Dividindo Matriz A em 4
+    pixel** matAParte1 = alocarMatrizPixels(tamanhoMatrizDividido);
+    dividirMatriz(n, matA, matAParte1, 0, 0, rgbSize);
+    pixel** matAParte2 = alocarMatrizPixels(tamanhoMatrizDividido); 
+    dividirMatriz(n, matA, matAParte2, 0, tamanhoMatrizDividido, rgbSize);
+    pixel** matAParte3 = alocarMatrizPixels(tamanhoMatrizDividido);
+    dividirMatriz(n, matA, matAParte3, tamanhoMatrizDividido, 0, rgbSize);
+    pixel** matAParte4 = alocarMatrizPixels(tamanhoMatrizDividido);
+    dividirMatriz(n, matA, matAParte4, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
+
+     //Dividindo Matriz B em 4
+    pixel** matBParte1 = alocarMatrizPixels(tamanhoMatrizDividido);
+    dividirMatriz(n, matB, matBParte1, 0, 0, rgbSize);
+    pixel** matBParte2 = alocarMatrizPixels(tamanhoMatrizDividido);
+    dividirMatriz(n, matB, matBParte2, 0, tamanhoMatrizDividido, rgbSize);
+    pixel** matBParte3 = alocarMatrizPixels(tamanhoMatrizDividido);
+    dividirMatriz(n, matB, matBParte3, tamanhoMatrizDividido, 0, rgbSize);
+    pixel** matBParte4 = alocarMatrizPixels(tamanhoMatrizDividido);
+    dividirMatriz(n, matB, matBParte4, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
+        
+    //Matrizes temporarias para serem utilizadas para chamar as adicoes e subtracoes nos produtos de strassen
+    pixel** temp1 = alocarMatrizPixels(tamanhoMatrizDividido);
+    pixel** temp2 = alocarMatrizPixels(tamanhoMatrizDividido);
+
+    //Variaveis para receber os resultados das formulas de strassen
+    pixel** p1;
+    pixel** p2;
+    pixel** p3;
+    pixel** p4;
+    pixel** p5;
+    pixel** p6;
+    pixel** p7;
+
+    //7 produtos de strassen
+     //P1 = A.(F-H)
+    subtracaoMatrizes(tamanhoMatrizDividido, matBParte2, matBParte4, temp1, rgbSize);
+    p1 = multiplicacaoMatrizesStrassen(matAParte1, temp1, tamanhoMatrizDividido, rgbSize);
+    //P2 = (A+B).H
+    adicaoMatrizes(tamanhoMatrizDividido, matAParte1, matAParte2, temp1, rgbSize);
+    p2 = multiplicacaoMatrizesStrassen(temp1, matBParte4, tamanhoMatrizDividido, rgbSize);
+    //P3 = (C+D).E
+    adicaoMatrizes(tamanhoMatrizDividido, matAParte3, matAParte4, temp1, rgbSize);
+    p3 = multiplicacaoMatrizesStrassen(temp1, matBParte1, tamanhoMatrizDividido, rgbSize);
+    //P4 = D.(G-E)
+    subtracaoMatrizes(tamanhoMatrizDividido, matBParte3, matBParte1, temp1, rgbSize);
+    p4 = multiplicacaoMatrizesStrassen(matAParte4, temp1, tamanhoMatrizDividido, rgbSize);
+    //P5 = (A+D).(E+H)
+    adicaoMatrizes(tamanhoMatrizDividido, matAParte1, matAParte4, temp1, rgbSize);
+    adicaoMatrizes(tamanhoMatrizDividido, matBParte1, matBParte4, temp2, rgbSize);
+    p5 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
+    //P6 = (B-D).(G+H)
+    subtracaoMatrizes(tamanhoMatrizDividido, matAParte2, matAParte4, temp1, rgbSize);
+    adicaoMatrizes(tamanhoMatrizDividido, matBParte3, matBParte4, temp2, rgbSize);
+    p6 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
+    //P7 = (A-C).(E-F)
+    subtracaoMatrizes(tamanhoMatrizDividido, matAParte1, matAParte3, temp1, rgbSize);
+    adicaoMatrizes(tamanhoMatrizDividido, matBParte1, matBParte2, temp2, rgbSize);
+    p7 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
+
+    freeMatriz(matAParte1, tamanhoMatrizDividido);
+    freeMatriz(matAParte2, tamanhoMatrizDividido);
+    freeMatriz(matAParte3, tamanhoMatrizDividido);
+    freeMatriz(matAParte4, tamanhoMatrizDividido);
+    freeMatriz(matBParte1, tamanhoMatrizDividido);
+    freeMatriz(matBParte2, tamanhoMatrizDividido);
+    freeMatriz(matBParte3, tamanhoMatrizDividido);
+    freeMatriz(matBParte4, tamanhoMatrizDividido);
+
+    //Matrizes das 4 partes que serao juntadas posteriormentes aos produtos de Strassen
+    pixel** matResultanteP1 = alocarMatrizPixels(tamanhoMatrizDividido);
+    pixel** matResultanteP2 = alocarMatrizPixels(tamanhoMatrizDividido);
+    pixel** matResultanteP3 = alocarMatrizPixels(tamanhoMatrizDividido);
+    pixel** matResultanteP4 = alocarMatrizPixels(tamanhoMatrizDividido);
+
+    adicaoMatrizes(tamanhoMatrizDividido, p5, p4, temp1, rgbSize);
+    subtracaoMatrizes(tamanhoMatrizDividido, temp1, p2, temp2, rgbSize);
+    adicaoMatrizes(tamanhoMatrizDividido, temp2, p6, matResultanteP1, rgbSize);
+
+    adicaoMatrizes(tamanhoMatrizDividido, p1, p2, matResultanteP2, rgbSize);
+    adicaoMatrizes(tamanhoMatrizDividido, p3, p4, matResultanteP3, rgbSize);
+
+    adicaoMatrizes(tamanhoMatrizDividido, p5, p1, temp1, rgbSize);
+    subtracaoMatrizes(tamanhoMatrizDividido, temp1, p3, temp2, rgbSize);
+    subtracaoMatrizes(tamanhoMatrizDividido, temp2, p7, matResultanteP4, rgbSize);
+
+    freeMatriz(temp1, tamanhoMatrizDividido);
+    freeMatriz(temp2, tamanhoMatrizDividido);
+
+    freeMatriz(p1, tamanhoMatrizDividido);
+    freeMatriz(p2, tamanhoMatrizDividido);
+    freeMatriz(p3, tamanhoMatrizDividido);
+    freeMatriz(p4, tamanhoMatrizDividido);
+    freeMatriz(p5, tamanhoMatrizDividido);
+    freeMatriz(p6, tamanhoMatrizDividido);
+    freeMatriz(p7, tamanhoMatrizDividido);
+
+
+    //Juncao das 4 partes
+    juntarMatriz(n, matResultanteP1, resultado, 0, 0, rgbSize);
+    juntarMatriz(n, matResultanteP2, resultado, 0, tamanhoMatrizDividido, rgbSize);
+    juntarMatriz(n, matResultanteP3, resultado, tamanhoMatrizDividido, 0, rgbSize);
+    juntarMatriz(n, matResultanteP4, resultado, tamanhoMatrizDividido, tamanhoMatrizDividido, rgbSize);
+
+    //Liberando da memoria as matrizes restantes
+    freeMatriz(matResultanteP1, tamanhoMatrizDividido);
+    freeMatriz(matResultanteP2, tamanhoMatrizDividido);
+    freeMatriz(matResultanteP3, tamanhoMatrizDividido);
+    freeMatriz(matResultanteP4, tamanhoMatrizDividido);
+    
     return resultado;
 }
 

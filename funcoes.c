@@ -168,7 +168,7 @@ int*** multiplicacaoMatrizesStrassen(int*** matA, int***matB, int n, int rgbSize
         adicaoMatrizes(tamanhoMatrizDividido, matBParte1, matBParte4, temp2, rgbSize);
         p5 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
         //P6 = (B-D).(G+H)
-        subtracaoMatrizes(tamanhoMatrizDividido, matAParte2, matAParte4, temp2, rgbSize);
+        subtracaoMatrizes(tamanhoMatrizDividido, matAParte2, matAParte4, temp1, rgbSize);
         adicaoMatrizes(tamanhoMatrizDividido, matBParte3, matBParte4, temp2, rgbSize);
         p6 = multiplicacaoMatrizesStrassen(temp1, temp2, tamanhoMatrizDividido, rgbSize);
         //P7 = (A-C).(E-F)
